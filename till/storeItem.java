@@ -2,12 +2,14 @@ package till;
 
 public class storeItem implements Comparable<storeItem> {
 
+    String itemName;
     double cost;
     int code;
     double weight;
     boolean taxed;
 
     storeItem(){
+        this.itemName = "";
         this.taxed = true;
         this.cost = -1;
         this.code = -1;
@@ -49,6 +51,14 @@ public class storeItem implements Comparable<storeItem> {
         return this.taxed;
     }
 
+    public void removeTax(){
+        this.taxed = false;
+    }
+
+    public String getItemName(int code){
+        return "";
+    }
+
     @Override 
     public int compareTo(storeItem other){
         if (this.cost == other.cost){
@@ -78,8 +88,6 @@ public class storeItem implements Comparable<storeItem> {
     public int hashCode(){
         return 31 * this.code;
     }
-
-
 }
 
  
