@@ -1,17 +1,21 @@
 package till;
 
-public abstract class storeItem {
+public class storeItem implements Comparable<storeItem> {
+
     double cost;
     int code;
     double weight;
+    boolean taxed;
 
     storeItem(){
-        this.cost = 0.0;
-        this.code = 0;
-        this.weight = 0.0;
+        this.taxed = true;
+        this.cost = -1;
+        this.code = -1;
+        this.weight = Double.NaN;
     }
 
     storeItem(double cost, int code) {
+        this.taxed = true;
         this.cost = cost;
         this.code = code;
         this.weight = Double.NaN;
@@ -19,6 +23,7 @@ public abstract class storeItem {
     }
 
     storeItem(double cost, int code, double weight) {
+        this.taxed = true;
         this.cost = cost;
         this.code = code;
         this.weight = weight;
@@ -40,8 +45,21 @@ public abstract class storeItem {
         this.cost = cost;
     }
 
-    public void setWeight(double weight){
-        this.weight = weight;
+    public boolean isTaxed(){
+        return this.taxed;
+    }
+
+    @Override 
+    public int compareTo(storeItem other){
+        if (this.cost == other.cost){
+            return 0;
+        }
+        else if (this.cost > other.cost){
+            return 1;
+        }
+        else{
+            return -1;
+        }
     }
 
     @Override
@@ -49,13 +67,20 @@ public abstract class storeItem {
         if (this == other){
             return true;
         }
-
         if (!(other instanceof storeItem)){
             return false;
         }
-
         storeItem c = (storeItem) other;
-
         return (this.code == c.code);
     }
+
+    @Override
+    public int hashCode(){
+        return 31 * this.code;
+    }
+
+
 }
+
+ 
+
