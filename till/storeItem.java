@@ -1,70 +1,55 @@
 package till;
 
+import java.lang.Math;
+
 public class storeItem implements Comparable<storeItem> {
 
-    String itemName;
-    double cost;
-    int code;
-    double weight;
-    boolean taxed;
+    String productName;
+    String brand;
+    double price;
+    String category;
+    String subCategory;
+    long barcode;
+    double taxRate;
 
-    storeItem(){
-        this.itemName = "";
-        this.taxed = true;
-        this.cost = -1;
-        this.code = -1;
-        this.weight = Double.NaN;
+    public storeItem(String productName, String brand, double price, String category, String subCategory, long barcode) {
+        this.productName = productName;
+        this.brand = brand;
+        this.price = price;
+        this.category = category;
+        this.subCategory = subCategory;
+        this.barcode = barcode;
+        this.taxRate = 1;
     }
 
-    storeItem(double cost, int code) {
-        this.taxed = true;
-        this.cost = cost;
-        this.code = code;
-        this.weight = Double.NaN;
-
+    public storeItem(storeItem other){
+        this.productName = other.productName;
+        this.brand = other.brand;
+        this.price = other.price;
+        this.category = other.category;
+        this.subCategory = other.subCategory;
+        this.barcode = other.barcode;
+        this.taxRate = other.taxRate;
     }
 
-    storeItem(double cost, int code, double weight) {
-        this.taxed = true;
-        this.cost = cost;
-        this.code = code;
-        this.weight = weight;
+    public void applyDiscount(double discountRate) {
+        this.price = discountRate * price;
     }
 
-    public double getCost(){
-        return this.cost;
+    public double taxRate() {
+        return this.taxRate;
     }
 
-    public int getBarCode(){
-        return this.code;
-    }
-
-    public void setBarCode(int code){
-        this.code = code;
-    }
-
-    public void setCost(double cost){
-        this.cost = cost;
-    }
-
-    public boolean isTaxed(){
-        return this.taxed;
-    }
-
-    public void removeTax(){
-        this.taxed = false;
-    }
-
-    public String getItemName(int code){
-        return "";
+    public void setTaxRate(double rate){
+        this.taxRate *= rate;
     }
 
     @Override 
     public int compareTo(storeItem other){
-        if (this.cost == other.cost){
+        if (this.price == other.price){
             return 0;
         }
-        else if (this.cost > other.cost){
+        else if (this.price > other.price){
             return 1;
         }
         else{
@@ -81,12 +66,19 @@ public class storeItem implements Comparable<storeItem> {
             return false;
         }
         storeItem c = (storeItem) other;
-        return (this.code == c.code);
+        return (this.barcode == c.barcode);
     }
 
     @Override
-    public int hashCode(){
-        return 31 * this.code;
+    public int hashCode() {
+        return Math.toIntExact(barcode);
+    }
+
+    @Override
+    public String toString() {
+        String s = new String();
+        s += this.productName + "|" +  this.brand + " ----  $" +  this.price;
+        return s;
     }
 }
 
