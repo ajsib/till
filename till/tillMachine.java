@@ -107,6 +107,11 @@ public class tillMachine {
             this.succesfullPayment = this.payment.succesfullEvent;
         }
 
+        public void addItem(long barcode){
+            this.items.add(item);
+            this.totalCost += item.getPrice();
+        }
+
         
         
 
