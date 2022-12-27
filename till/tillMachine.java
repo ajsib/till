@@ -117,12 +117,14 @@ public class tillMachine {
     private storeData storeItems;
     private int transactionCount;
     private double totalSoldDollars;
-    private ArrayList<storeItem> scannedItems;
     private double registerCashOnHand;
 
     public tillMachine(storeData database){
-
-
+        this.storeItems = database;
+        this.transactionCount = 0;
+        this.totalSoldDollars = 0;
+        this.registerCashOnHand = 0;
+        this.prevTransactions = new ArrayList<ArrayList<storeItem>>();
     }
     
 }

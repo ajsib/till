@@ -10,6 +10,7 @@ public class storeData {
     double totalInventoryValue;
     ArrayList<storeItem> inventory;
     int numItems;
+    ArrayList<tillMachine> tillMachines;
 
     public storeData(){
         this.totalInventoryValue = 0;
