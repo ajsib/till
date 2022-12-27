@@ -27,7 +27,7 @@ public class tillMachine {
                 this.paymentMethod = 0;
                 System.out.println("Enter the amount paid: ");
                 this.amountPaid = s.nextDouble();
-                s.close();
+                // s.close();
                 this.changeGiven = this.amountPaid - totalCost;
 
                 if (this.changeGiven < 0){
@@ -44,7 +44,7 @@ public class tillMachine {
                 this.paymentMethod = 1;
                 System.out.println("Enter the card number: ");
                 this.cardNumber = s.nextLine();
-                s.close();
+                // s.close();
                 if (cardNumber.length() != 16 || !cardNumber.matches("^[31-9]{15}$")){
                     System.out.println("Invalid card number");
                     this.succesfullEvent = false;
@@ -120,10 +120,16 @@ public class tillMachine {
             return -1;
         }
 
-        public void addItemToCart(long barcode){
-            storeItem item = new storeItem(storeItems.getItem(barcode));
-            this.cart.add(item);
-            this.totalCost += item.getPrice();
+        public void addItemToCart(long barcode) throws ItemNotFoundException{
+            storeItem item0 = storeItems.getItem(barcode);
+            if (item0 == null){
+                throw new ItemNotFoundException("Item not found");
+            }
+            else{
+                storeItem item = new storeItem(item0);
+                this.cart.add(item);
+                this.totalCost += item.getPrice();
+            }
         }
 
         public void removeItemFromCart(long barcode){
@@ -144,7 +150,7 @@ public class tillMachine {
             System.out.println("1: Card");
             System.out.println("2: Cancel transaction");
             int paymentMethod = s.nextInt();
-            s.close();
+            // s.close();
             switch(paymentMethod){
                 case 0:
                     this.payment.setPaymentMethodCash();
@@ -165,11 +171,13 @@ public class tillMachine {
     private int transactionCount;
     private double totalSoldDollars;
     private double registerCashOnHand;
+    private String tillID;
 
-    public tillMachine(storeData database){
+    public tillMachine(storeData database, final String tillID){
         this.storeItems = database;
         this.transactionCount = 0;
         this.totalSoldDollars = 0;
+        this.tillID = tillID;
         this.registerCashOnHand = 0;
         this.prevTransactions = new ArrayList<Tuple<ArrayList<storeItem>, String>>();
     }
@@ -177,16 +185,31 @@ public class tillMachine {
     public void newTransaction(){
         transactionEvent transaction = new transactionEvent();
         Scanner s = new Scanner(System.in);
-        System.out.println("Enter barcode: ");
+        System.out.println("Enter barcode: " + this.storeItems.getRandomBarcode());
         long barcode = s.nextLong();
-        s.close();
         while (barcode != 0){
-            Scanner p = new Scanner(System.in);
-            transaction.addItemToCart(barcode);
-            System.out.println("Enter barcode: ");
-            barcode = p.nextLong();
-            p.close();
+            if (barcode == -1){
+                transaction.removeItemFromCart(barcode);
+            }
+            else if (barcode == -2){
+                System.out.println("Enter discount rate: ");
+                Scanner d = new Scanner(System.in);
+                double discountRate = d.nextDouble();
+                d.close();
+                transaction.applyDiscount(barcode, discountRate);
+            }
+            else{
+                try {
+                    transaction.addItemToCart(barcode);
+                } catch (ItemNotFoundException e) {
+                    System.err.println(e.getMessage());
+                }
+            }
+            System.out.println("Enter barcode: " + this.storeItems.getRandomBarcode());
+            barcode = s.nextLong();
         }
+        // s.close();
+
         transaction.customerPay();
         this.transactionCount++;
         Tuple<ArrayList<storeItem>, String> transactionTuple = 
@@ -194,6 +217,7 @@ public class tillMachine {
         this.prevTransactions.add(transactionTuple);
         if (transaction.succesfullPayment){
             this.totalSoldDollars += transaction.totalCost;
+            storeItems.updateStock(transaction.cart);
             if (transaction.payment.paymentMethod == 0){
                 this.registerCashOnHand += transaction.payment.amountPaid - transaction.payment.changeGiven;
             }
@@ -217,8 +241,9 @@ public class tillMachine {
     }
 
     @Override
-    public String toString() {
+    public String toString(){
         String output = "";
+        output += "Till ID: " + this.tillID + "\n";
         output += "Total Sold: $" + this.totalSoldDollars + "\n";
         output += "Total Transactions: " + this.transactionCount + "\n";
         output += "Cash in Register: $" + this.registerCashOnHand + "\n";

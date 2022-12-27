@@ -3,7 +3,9 @@ import random
 
 f = open("BigBasket.csv", "r")
 os.system("touch storeDB.txt && echo > storeDB.txt")
+os.system("touch usedbarcodes.txt && echo > usedbarcodes.txt")
 f2 = open("storeDB.txt", "w")
+f3 = open("usedbarcodes.txt", "w")
 lines = f.readlines()
 used_barcodes = []
 count = 0
@@ -27,9 +29,10 @@ for line in lines:
 			while barcode in used_barcodes:
 				barcode = random.randrange(1000000000000, 9999999999999)
 			used_barcodes.append(barcode)
+			f3.write(str(barcode) + "\n")
 			s = " " + str(barcode) + " " + str(qty) + "\n"
 			f2.write(s)
-
 	else: pass
 f2.close()
+f3.close()
 f.close()
