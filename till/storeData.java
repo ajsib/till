@@ -1,10 +1,8 @@
 package till;
 
 import java.util.ArrayList;
-import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.io.FileNotFoundException;
-import java.io.InputStream;
 import java.util.Scanner;
 import java.util.Random;
 
@@ -108,7 +106,9 @@ public class storeData {
         tillMachine machine1 = data.tillMachines.get(0);
         tillMachine machine2 = data.tillMachines.get(1);
         machine1.newTransaction();
+        machine1.newTransaction();
         machine2.newTransaction();
         System.out.println(machine1.toString());
+        System.out.println("\n" + machine2.toString());
     }
 }

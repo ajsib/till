@@ -23,11 +23,9 @@ public class tillMachine {
             }
 
             public void setPaymentMethodCash(){
-                Scanner s = new Scanner(System.in);
                 this.paymentMethod = 0;
                 System.out.println("Enter the amount paid: ");
-                this.amountPaid = s.nextDouble();
-                // s.close();
+                this.amountPaid = scanner.nextDouble();
                 this.changeGiven = this.amountPaid - totalCost;
 
                 if (this.changeGiven < 0){
@@ -40,11 +38,9 @@ public class tillMachine {
             }
 
             public void setPaymentMethodCard(){
-                Scanner s = new Scanner(System.in);
                 this.paymentMethod = 1;
                 System.out.println("Enter the card number: ");
-                this.cardNumber = s.nextLine();
-                // s.close();
+                this.cardNumber = scanner.next();
                 if (cardNumber.length() != 16 || !cardNumber.matches("^[31-9]{15}$")){
                     System.out.println("Invalid card number");
                     this.succesfullEvent = false;
@@ -71,20 +67,20 @@ public class tillMachine {
                         paymentMethod = "Card";
                         switch(this.cardNumber.toCharArray()[0]){
                             case '5' :
-                                paymentMethod += " (Mastercard)" + "XXXXXXXXXXXXX" + this.cardNumber.toCharArray()[14] 
-                                              + this.cardNumber.toCharArray()[15] + this.cardNumber.toCharArray()[16];
+                                paymentMethod += " (Mastercard)" + "XXXXXXXXXXXXX" + this.cardNumber.toCharArray()[13] 
+                                              + this.cardNumber.toCharArray()[14] + this.cardNumber.toCharArray()[15];
                                 break;
                             case '4':
-                                paymentMethod += " (Visa)"+ "XXXXXXXXXXXXX" + this.cardNumber.toCharArray()[14] 
-                                              + this.cardNumber.toCharArray()[15] + this.cardNumber.toCharArray()[16];
+                                paymentMethod += " (Visa)"+ "XXXXXXXXXXXXX" + this.cardNumber.toCharArray()[13] 
+                                              + this.cardNumber.toCharArray()[14] + this.cardNumber.toCharArray()[15];
                                 break;
                             case '3':
-                                paymentMethod += " (American Express)"+ "XXXXXXXXXXXX" + this.cardNumber.toCharArray()[13] 
-                                              + this.cardNumber.toCharArray()[14] + this.cardNumber.toCharArray()[15];;
+                                paymentMethod += " (American Express)"+ "XXXXXXXXXXXX" + this.cardNumber.toCharArray()[12] 
+                                              + this.cardNumber.toCharArray()[13] + this.cardNumber.toCharArray()[14];
                                 break;
                             case '6':
-                                paymentMethod += " (Discover)" + "XXXXXXXXXXXXX" + this.cardNumber.toCharArray()[14] 
-                                              + this.cardNumber.toCharArray()[15] + this.cardNumber.toCharArray()[16];
+                                paymentMethod += " (Discover)" + "XXXXXXXXXXXXX" + this.cardNumber.toCharArray()[13] 
+                                              + this.cardNumber.toCharArray()[14] + this.cardNumber.toCharArray()[15];
                                 break;
                             default:
                                 paymentMethod += " (Unknown Card Type)";
@@ -144,13 +140,11 @@ public class tillMachine {
         }
 
         public void customerPay(){
-            Scanner s = new Scanner(System.in);
             System.out.println("Enter payment method: ");
             System.out.println("0: Cash");
             System.out.println("1: Card");
             System.out.println("2: Cancel transaction");
-            int paymentMethod = s.nextInt();
-            // s.close();
+            int paymentMethod = scanner.nextInt();
             switch(paymentMethod){
                 case 0:
                     this.payment.setPaymentMethodCash();
@@ -172,6 +166,7 @@ public class tillMachine {
     private double totalSoldDollars;
     private double registerCashOnHand;
     private String tillID;
+    private Scanner scanner;
 
     public tillMachine(storeData database, final String tillID){
         this.storeItems = database;
@@ -180,22 +175,20 @@ public class tillMachine {
         this.tillID = tillID;
         this.registerCashOnHand = 0;
         this.prevTransactions = new ArrayList<Tuple<ArrayList<storeItem>, String>>();
+        this.scanner = new Scanner(System.in);
     }
 
     public void newTransaction(){
         transactionEvent transaction = new transactionEvent();
-        Scanner s = new Scanner(System.in);
         System.out.println("Enter barcode: " + this.storeItems.getRandomBarcode());
-        long barcode = s.nextLong();
+        long barcode = this.scanner.nextLong();
         while (barcode != 0){
             if (barcode == -1){
                 transaction.removeItemFromCart(barcode);
             }
             else if (barcode == -2){
                 System.out.println("Enter discount rate: ");
-                Scanner d = new Scanner(System.in);
-                double discountRate = d.nextDouble();
-                d.close();
+                double discountRate = this.scanner.nextDouble();
                 transaction.applyDiscount(barcode, discountRate);
             }
             else{
@@ -206,9 +199,8 @@ public class tillMachine {
                 }
             }
             System.out.println("Enter barcode: " + this.storeItems.getRandomBarcode());
-            barcode = s.nextLong();
+            barcode = this.scanner.nextLong();
         }
-        // s.close();
 
         transaction.customerPay();
         this.transactionCount++;
