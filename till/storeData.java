@@ -52,6 +52,14 @@ public class storeData {
         return -1;
     }
 
+    public storeItem getItem(long barcode){
+        int index = this.getItemIndex(barcode);
+        if (index != -1){
+            return this.inventory.get(index);
+        }
+        return null;
+    }
+
     public void removeItemFromInventory(long barcode){
         int index = this.getItemIndex(barcode);
         if (index != -1){
