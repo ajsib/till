@@ -8,17 +8,19 @@ public class storeItem implements Comparable<storeItem> {
     String brand;
     double price;
     String category;
-    String subCategory;
+    String quantity;
     long barcode;
     double taxRate;
+    int inStock;
 
-    public storeItem(String productName, String brand, double price, String category, String subCategory, long barcode) {
+    public storeItem(String productName, String brand, double price, String quantity, String category, long barcode, int inStock) {
         this.productName = productName;
         this.brand = brand;
         this.price = price;
+        this.quantity = quantity;
         this.category = category;
-        this.subCategory = subCategory;
         this.barcode = barcode;
+        this.inStock = inStock;
         this.taxRate = 1;
     }
 
@@ -26,10 +28,11 @@ public class storeItem implements Comparable<storeItem> {
         this.productName = other.productName;
         this.brand = other.brand;
         this.price = other.price;
+        this.quantity = other.quantity;
         this.category = other.category;
-        this.subCategory = other.subCategory;
         this.barcode = other.barcode;
         this.taxRate = other.taxRate;
+        this.inStock = other.inStock;
     }
 
     public void applyDiscount(double discountRate) {
@@ -42,6 +45,18 @@ public class storeItem implements Comparable<storeItem> {
 
     public void setTaxRate(double rate){
         this.taxRate *= rate;
+    }
+
+    public double getPrice() {
+        return this.price;
+    }
+
+    public long getBarcode() {
+        return this.barcode;
+    }
+
+    public int getInStock() {
+        return this.inStock;
     }
 
     @Override 
@@ -77,7 +92,7 @@ public class storeItem implements Comparable<storeItem> {
     @Override
     public String toString() {
         String s = new String();
-        s += this.productName + "|" +  this.brand + " ----  $" +  this.price;
+        s += this.productName + " | " +  this.brand + " ----  $" +  this.price;
         return s;
     }
 }

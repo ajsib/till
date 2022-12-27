@@ -94,7 +94,7 @@ public class tillMachine {
             }
         }
 
-        ArrayList<storeItem> items;
+        ArrayList<storeItem> cart;
         double totalCost;
         double totalDollars;
         boolean succesfullPayment;
@@ -102,29 +102,26 @@ public class tillMachine {
 
         transactionEvent(){
             this.payment = new paymentEvent();
-            this.items = new ArrayList<>();
+            this.cart = new ArrayList<>();
             this.totalDollars = 0;
             this.succesfullPayment = this.payment.succesfullEvent;
         }
 
-        public void addItem(long barcode){
-            this.items.add(item);
+        public void addItemToCart(long barcode){
+            this.cart.add(item);
             this.totalCost += item.getPrice();
         }
-
-        
-        
-
-
     }
 
     private ArrayList<ArrayList<storeItem>> prevTransactions;
+    private storeData storeItems;
     private int transactionCount;
     private double totalSoldDollars;
     private ArrayList<storeItem> scannedItems;
     private double registerCashOnHand;
 
-    public tillMachine(){
+    public tillMachine(storeData database){
+
 
     }
     
